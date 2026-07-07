@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #202020;
+            overflow: hidden;
+            font-family: Inter, Arial, sans-serif;
+        }
+
+        #panel {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+
+            display: flex;
+            gap: 10px;
+            align-items: center;
+
+            padding: 12px;
+            border-radius: 14px;
+
+            background: rgba(40, 40, 40, .9);
+            backdrop-filter: blur(12px);
+
+            border: 1px solid rgba(255, 255, 255, .08);
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, .35);
+
+            z-index: 1000;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .btn {
+            height: 42px;
+            padding: 0 18px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: none;
+            border-radius: 10px;
+
+            background: #333;
+            color: #fff;
+
+            font-size: 14px;
+            cursor: pointer;
+
+            transition: .15s;
+        }
+
+        .btn:hover {
+            background: #444;
+        }
+
+        .btn:active {
+            transform: scale(.97);
+        }
+
+        .btn.save {
+            background: #2d6cdf;
+        }
+
+        .btn.save:hover {
+            background: #255bc0;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #brushPanel {
+            position: fixed;
+
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+
+            display: none;
+            gap: 15px;
+            align-items: center;
+
+            padding: 12px 16px;
+
+            background: rgba(40, 40, 40, .9);
+            backdrop-filter: blur(12px);
+
+            border-radius: 14px;
+
+            border: 1px solid rgba(255, 255, 255, .08);
+
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+
+            z-index: 999;
+        }
+
+
+        #brushPanel button {
+            cursor: pointer;
+            border: none;
+        }
+
+
+        .sizes {
+            display: flex;
+            gap: 6px;
+        }
+
+
+        .sizes button {
+            width: 35px;
+            height: 35px;
+
+            border-radius: 8px;
+
+            background: #333;
+            color: white;
+        }
+
+
+        .colors {
+            display: flex;
+            gap: 8px;
+        }
+
+
+        .color {
+            width: 28px;
+            height: 28px;
+
+            border-radius: 50%;
+        }
+
+
+        .black {
+            background: #fff;
+        }
+
+        .red {
+            background: #ff3b30;
+        }
+
+        .blue {
+            background: #007aff;
+        }
+
+        .green {
+            background: #34c759;
+        }
+
+        .yellow {
+            background: #ffcc00;
+        }
+
+        #overlay {
+
+            position: fixed;
+
+            inset: 0;
+
+            background:
+                rgba(255, 255, 255, .10);
+
+            backdrop-filter: blur(18px);
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            z-index: 5000;
+
+        }
+
+
+
+        .login {
+
+            width: 360px;
+
+            background: #ffffff;
+
+            padding: 32px;
+
+            border-radius: 18px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 18px;
+
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, .18);
+
+            border: 1px solid rgba(0, 0, 0, .08);
+
+        }
+
+
+
+        #overlayTitle {
+
+            margin: 0;
+
+            color: #111;
+
+            font-size: 24px;
+
+            font-weight: 600;
+
+            letter-spacing: -0.5px;
+
+        }
+
+
+
+        .login input {
+
+            height: 44px;
+
+            border-radius: 10px;
+
+            border: 1px solid #ddd;
+
+            padding: 0 14px;
+
+            font-size: 15px;
+
+            color: #111;
+
+            background: #fafafa;
+
+            outline: none;
+
+            transition: .15s;
+
+        }
+
+
+
+        .login input::placeholder {
+
+            color: #999;
+
+        }
+
+
+
+        .login input:focus {
+
+            background: white;
+
+            border-color: #2383e2;
+
+            box-shadow:
+                0 0 0 3px rgba(35, 131, 226, .15);
+
+        }
+
+
+
+        .login .btn.save {
+
+            height: 44px;
+
+            border-radius: 10px;
+
+            background: #2383e2;
+
+            color: white;
+
+            font-weight: 500;
+
+            font-size: 15px;
+
+        }
+
+
+
+        .login .btn.save:hover {
+
+            background: #1f6fbe;
+
+        }
+
+
+
+        #toast {
+
+            position: fixed;
+
+            bottom: 30px;
+
+            left: 50%;
+
+            transform:
+                translateX(-50%) translateY(100px);
+
+
+            background: #222;
+
+            color: white;
+
+            padding: 14px 22px;
+
+            border-radius: 18px;
+
+
+            opacity: 0;
+
+            transition: .3s;
+
+            z-index: 6000;
+
+        }
+
+
+
+        #toast.show {
+
+            opacity: 1;
+
+            transform:
+                translateX(-50%) translateY(0);
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="overlay">
+
+
+        <div class="login">
+
+
+            <h2 id="overlayTitle">
+                Вход
+            </h2>
+
+
+            <input id="nameInput" placeholder="Ваше имя">
+
+
+            <button class="btn save" onclick="enterEditor()">
+
+                Продолжить
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+    <div id="toast"></div>
+
+
+    <div id="panel">
+
+        <label class="btn" for="file">
+            Добавить фото
+        </label>
+
+        <input type="file" id="file">
+
+        <button class="btn" onclick="remove()">
+            Удалить фото
+        </button>
+
+        <button class="btn" onclick="toggleDrawing()">
+            Рисовать
+        </button>
+
+        <button class="btn save" onclick="save()">
+            Сохранить изменения
+        </button>
+
+    </div>
+
+
+    <div id="brushPanel">
+
+        <div class="sizes">
+            <button onclick="setBrushSize(3)">3</button>
+            <button onclick="setBrushSize(7)">7</button>
+            <button onclick="setBrushSize(12)">12</button>
+            <button onclick="setBrushSize(20)">20</button>
+        </div>
+
+
+        <div class="colors">
+            <button class="color black" onclick="setBrushColor('#fff')"></button>
+            <button class="color red" onclick="setBrushColor('#ff3b30')"></button>
+            <button class="color blue" onclick="setBrushColor('#007aff')"></button>
+            <button class="color green" onclick="setBrushColor('#34c759')"></button>
+            <button class="color yellow" onclick="setBrushColor('#ffcc00')"></button>
+        </div>
+
+    </div>
+
+    <canvas id="c" width="1920" height="1080"></canvas>
+
+
+    <script src="app.js"></script>
+
+
+</body>
+
+</html>

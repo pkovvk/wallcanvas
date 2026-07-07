@@ -6,7 +6,9 @@ const { chromium } = require("playwright");
 
 const app = express();
 
-app.use(express.json());
+app.use(express.json({
+    limit: "50mb"
+}));
 app.use(express.static("public"));
 
 const upload = multer({
@@ -46,23 +48,72 @@ async function renderWallpaper(state) {
         }
     });
 
+
     await page.goto("http://localhost:3000/render.html");
 
 
     const png = await page.evaluate(async (state) => {
 
+
+        const fixedState = JSON.parse(
+            JSON.stringify(state)
+        );
+
+
+        function fixImages(obj) {
+
+            if (!obj || typeof obj !== "object") {
+                return;
+            }
+
+
+            if (obj.type === "image") {
+
+                obj.crossOrigin = "anonymous";
+
+                obj.src = obj.src.replace(
+                    /^https:\/\/.*?\.lhr\.life/,
+                    "http://localhost:3000"
+                );
+
+            }
+
+
+            Object.values(obj).forEach(fixImages);
+        }
+
+
+        fixImages(fixedState);
+
+
+
         const canvas = new fabric.Canvas("canvas");
 
+
         await new Promise(resolve => {
-            canvas.loadFromJSON(state, () => {
-                canvas.renderAll();
-                resolve();
-            });
+
+            canvas.loadFromJSON(
+                fixedState,
+                () => {
+
+                    canvas.renderAll();
+
+                    resolve();
+
+                }
+            );
+
         });
 
-        return canvas.toDataURL("png");
+
+
+        return canvas.toDataURL({
+            format: "png"
+        });
+
 
     }, state);
+
 
 
     fs.writeFileSync(
@@ -249,6 +300,13 @@ app.post("/unlock", (req, res) => {
 
 app.use(
     "/uploads",
+    (req, res, next) => {
+        res.setHeader(
+            "Access-Control-Allow-Origin",
+            "*"
+        );
+        next();
+    },
     express.static("data/uploads")
 );
 

@@ -2,187 +2,307 @@
 <html>
 
 <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
         * {
             box-sizing: border-box;
         }
 
+        :root {
+            --bg: #0d0d0d;
+            --panel: #171717;
+            --panel-hover: #222;
+            --border: rgba(255, 255, 255, .08);
+            --text: #f5f5f5;
+            --muted: #999;
+            --accent: #2383e2;
+        }
+
+
         body {
             margin: 0;
-            background: #202020;
             overflow: hidden;
-            font-family: Inter, Arial, sans-serif;
+
+            background:
+                radial-gradient(circle at top,
+                    #1d1d1d,
+                    #090909 60%);
+
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            color: var(--text);
         }
+
+
+
+        /* ---------- FLOATING TOOLBAR ---------- */
 
         #panel {
+
             position: fixed;
-            top: 20px;
+
+            top: 24px;
             left: 50%;
+
             transform: translateX(-50%);
 
+
             display: flex;
-            gap: 10px;
-            align-items: center;
+            gap: 8px;
 
-            padding: 12px;
-            border-radius: 14px;
 
-            background: rgba(40, 40, 40, .9);
-            backdrop-filter: blur(12px);
+            padding: 10px;
 
-            border: 1px solid rgba(255, 255, 255, .08);
+            background:
+                rgba(25, 25, 25, .75);
+
+
+            backdrop-filter:
+                blur(20px);
+
+
+            border:
+                1px solid var(--border);
+
+
+            border-radius: 18px;
+
 
             box-shadow:
-                0 10px 30px rgba(0, 0, 0, .35);
+                0 20px 50px rgba(0, 0, 0, .45);
+
 
             z-index: 1000;
+
         }
 
-        input[type="file"] {
-            display: none;
-        }
+
 
         .btn {
-            height: 42px;
-            padding: 0 18px;
+
+            height: 40px;
+
+            padding: 0 14px;
+
 
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 8px;
 
-            border: none;
+
             border-radius: 10px;
 
-            background: #333;
-            color: #fff;
 
-            font-size: 14px;
+            background:
+                transparent;
+
+
+            color: #ddd;
+
+
+            border:
+                1px solid transparent;
+
+
             cursor: pointer;
 
-            transition: .15s;
+
+            font-size: 14px;
+
+
+            transition: .18s;
+
         }
+
 
         .btn:hover {
-            background: #444;
+
+            background:
+                var(--panel-hover);
+
+            color: white;
+
         }
+
+
 
         .btn:active {
-            transform: scale(.97);
+
+            transform: scale(.96);
+
         }
+
+
 
         .btn.save {
-            background: #2d6cdf;
+
+            background:
+                var(--accent);
+
+            color: white;
+
         }
+
 
         .btn.save:hover {
-            background: #255bc0;
+
+            background: #3294f4;
+
         }
 
-        canvas {
-            display: block;
+
+
+
+
+        /* ICONS */
+
+        .btn svg {
+
+            width: 17px;
+            height: 17px;
+
         }
+
+
+
+        /* ---------- DRAW PANEL ---------- */
+
 
         #brushPanel {
+
+
             position: fixed;
 
-            top: 100px;
+
+            top: 92px;
+
             left: 50%;
-            transform: translateX(-50%);
+
+            transform:
+                translateX(-50%);
+
 
             display: none;
-            gap: 15px;
-            align-items: center;
+
+
+            gap: 18px;
+
 
             padding: 12px 16px;
 
-            background: rgba(40, 40, 40, .9);
-            backdrop-filter: blur(12px);
 
-            border-radius: 14px;
+            background:
+                rgba(25, 25, 25, .85);
 
-            border: 1px solid rgba(255, 255, 255, .08);
 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+            backdrop-filter:
+                blur(20px);
 
-            z-index: 999;
+
+            border:
+                1px solid var(--border);
+
+
+            border-radius: 16px;
+
+
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, .4);
+
+
         }
 
-
-        #brushPanel button {
-            cursor: pointer;
-            border: none;
-        }
-
-
-        .sizes {
-            display: flex;
-            gap: 6px;
-        }
 
 
         .sizes button {
-            width: 35px;
-            height: 35px;
 
-            border-radius: 8px;
 
-            background: #333;
+            width: 34px;
+            height: 34px;
+
+
+            background: #242424;
+
             color: white;
+
+
+            border: none;
+
+
+            border-radius: 9px;
+
+
+            cursor: pointer;
+
+
         }
 
 
+        .sizes button:hover {
+
+            background: #333;
+
+        }
+
+
+
         .colors {
+
             display: flex;
-            gap: 8px;
+            gap: 10px;
+
         }
 
 
         .color {
+
             width: 28px;
             height: 28px;
 
             border-radius: 50%;
+
+            border:
+                2px solid rgba(255, 255, 255, .15);
+
+
+            cursor: pointer;
+
         }
 
 
-        .black {
-            background: #fff;
-        }
 
-        .red {
-            background: #ff3b30;
-        }
+        /* ---------- LOGIN ---------- */
 
-        .blue {
-            background: #007aff;
-        }
-
-        .green {
-            background: #34c759;
-        }
-
-        .yellow {
-            background: #ffcc00;
-        }
 
         #overlay {
+
 
             position: fixed;
 
             inset: 0;
 
-            background:
-                rgba(255, 255, 255, .10);
-
-            backdrop-filter: blur(18px);
 
             display: none;
+
 
             align-items: center;
 
             justify-content: center;
+
+
+            background:
+                rgba(0, 0, 0, .55);
+
+
+            backdrop-filter:
+                blur(15px);
+
 
             z-index: 5000;
 
@@ -192,13 +312,27 @@
 
         .login {
 
-            width: 360px;
 
-            background: #ffffff;
+            width: 380px;
 
-            padding: 32px;
 
-            border-radius: 18px;
+            padding: 34px;
+
+
+            border-radius: 24px;
+
+
+            background:
+                #181818;
+
+
+            border:
+                1px solid var(--border);
+
+
+            box-shadow:
+                0 40px 100px rgba(0, 0, 0, .7);
+
 
             display: flex;
 
@@ -206,26 +340,21 @@
 
             gap: 18px;
 
-            box-shadow:
-                0 20px 60px rgba(0, 0, 0, .18);
-
-            border: 1px solid rgba(0, 0, 0, .08);
-
         }
 
 
 
         #overlayTitle {
 
+
             margin: 0;
 
-            color: #111;
 
-            font-size: 24px;
+            font-size: 28px;
 
-            font-weight: 600;
 
-            letter-spacing: -0.5px;
+            letter-spacing: -.8px;
+
 
         }
 
@@ -233,116 +362,133 @@
 
         .login input {
 
-            height: 44px;
 
-            border-radius: 10px;
+            height: 46px;
 
-            border: 1px solid #ddd;
 
             padding: 0 14px;
 
-            font-size: 15px;
 
-            color: #111;
+            border-radius: 12px;
 
-            background: #fafafa;
+
+            background: #111;
+
+
+            border:
+                1px solid #333;
+
+
+            color: white;
+
 
             outline: none;
 
-            transition: .15s;
 
         }
-
-
-
-        .login input::placeholder {
-
-            color: #999;
-
-        }
-
 
 
         .login input:focus {
 
-            background: white;
 
-            border-color: #2383e2;
+            border-color:
+                var(--accent);
+
 
             box-shadow:
-                0 0 0 3px rgba(35, 131, 226, .15);
+                0 0 0 3px rgba(35, 131, 226, .2);
 
         }
 
 
 
-        .login .btn.save {
-
-            height: 44px;
-
-            border-radius: 10px;
-
-            background: #2383e2;
-
-            color: white;
-
-            font-weight: 500;
-
-            font-size: 15px;
-
-        }
+        .login p {
 
 
+            margin: 0;
 
-        .login .btn.save:hover {
 
-            background: #1f6fbe;
+            color: #888;
+
+
+            line-height: 1.5;
+
+
+            font-size: 13px;
 
         }
 
+
+
+
+        /* ---------- TOAST ---------- */
 
 
         #toast {
 
+
             position: fixed;
 
-            bottom: 30px;
+
+            bottom: 32px;
 
             left: 50%;
 
+
             transform:
-                translateX(-50%) translateY(100px);
+                translateX(-50%) translateY(80px);
 
 
-            background: #222;
+            padding: 12px 20px;
+
+
+            background: #1c1c1c;
+
+
+            border:
+                1px solid var(--border);
+
+
+            border-radius: 14px;
+
 
             color: white;
-
-            padding: 14px 22px;
-
-            border-radius: 18px;
 
 
             opacity: 0;
 
-            transition: .3s;
 
-            z-index: 6000;
+            transition: .25s;
+
+
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, .5);
+
 
         }
 
 
-
         #toast.show {
 
+
             opacity: 1;
+
 
             transform:
                 translateX(-50%) translateY(0);
 
         }
-    </style>
 
+
+
+        /* CANVAS */
+
+        canvas {
+
+            display: block;
+
+        }
+    </style>
 </head>
 
 <body>
@@ -367,7 +513,8 @@
 
             </button>
 
-            <p>После нажатия Вы начинаете сессию, обязательно сохраните изменения. Пока Ваша сессия активна, другой человек не сможет редактировать обои.</p>
+            <p>После нажатия Вы начинаете сессию, обязательно сохраните изменения. Пока Ваша сессия активна, другой
+                человек не сможет редактировать обои.</p>
 
 
         </div>

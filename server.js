@@ -17,6 +17,22 @@ const upload = multer({
 
 const LOCK_FILE = "data/lock.json";
 const STATE = "data/canvas.json";
+const VERSION_FILE = "data/version.json";
+
+function getVersion() {
+    if (!fs.existsSync(VERSION_FILE)) {
+        fs.writeFileSync(
+            VERSION_FILE,
+            JSON.stringify({
+                version: 1
+            }, null, 2)
+        );
+    }
+
+    return JSON.parse(
+        fs.readFileSync(VERSION_FILE, "utf8")
+    );
+}
 
 function getLock() {
     if (!fs.existsSync(LOCK_FILE)) {
@@ -126,6 +142,14 @@ async function renderWallpaper(state) {
 
 
     await browser.close();
+
+    await fetch("http://localhost:3000/version/update", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({})
+    });
 }
 
 
@@ -294,6 +318,32 @@ app.post("/unlock", (req, res) => {
 
     res.json({
         ok: true
+    });
+
+});
+
+app.get("/version", (req, res) => {
+
+    const data = getVersion();
+
+    res.json(data);
+
+});
+
+app.post("/version/update", (req, res) => {
+
+    const data = getVersion();
+
+    data.version += 1;
+
+    fs.writeFileSync(
+        VERSION_FILE,
+        JSON.stringify(data, null, 2)
+    );
+
+    res.json({
+        ok: true,
+        version: data.version
     });
 
 });

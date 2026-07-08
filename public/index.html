@@ -3,599 +3,613 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
 
-<script src="https://unpkg.com/lucide@latest"></script>
-
-
-<style>
-
-* {
-    box-sizing:border-box;
-}
+    <script src="https://unpkg.com/lucide@latest"></script>
 
 
-html,
-body {
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-    width:100%;
-    height:100%;
 
-    margin:0;
+        html,
+        body {
 
-    overflow:hidden;
+            width: 100%;
+            height: 100%;
 
-    font-family:
-        Inter,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
+            margin: 0;
 
-    background:
-        radial-gradient(
-            circle at top,
-            #252525,
-            #090909 65%
-        );
+            overflow: hidden;
 
-    color:white;
-}
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background:
+                radial-gradient(circle at top,
+                    #252525,
+                    #090909 65%);
+
+            color: white;
+        }
 
 
 
-/* =====================
+        /* =====================
    CANVAS
 ===================== */
 
 
-canvas {
+        canvas {
 
-    display:block;
+            position: absolute;
 
-}
+            left: 50%;
+            top: 50%;
+
+            transform:
+                translate(-50%, -50%);
+
+
+            width: min(100vw - 40px,
+                    calc((100vh - 40px) * 16 / 9));
+
+
+            height: auto;
+
+
+            border:
+                2px dashed rgba(255, 255, 255, .35);
+
+
+            box-shadow:
+                0 30px 80px rgba(0, 0, 0, .5);
+
+        }
 
 
 
-/* =====================
+        /* =====================
    TOOLBAR
 ===================== */
 
 
-#panel {
+        #panel {
 
-    position:fixed;
+            position: fixed;
 
-    top:24px;
+            top: 24px;
 
-    left:50%;
+            left: 50%;
 
-    transform:translateX(-50%);
+            transform: translateX(-50%);
 
 
-    display:flex;
+            display: flex;
 
-    gap:8px;
+            gap: 8px;
 
-    align-items:center;
+            align-items: center;
 
 
-    padding:10px;
+            padding: 10px;
 
 
-    background:
-        rgba(25,25,25,.75);
+            background:
+                rgba(25, 25, 25, .75);
 
 
-    backdrop-filter:
-        blur(20px);
+            backdrop-filter:
+                blur(20px);
 
 
-    border:
-        1px solid rgba(255,255,255,.08);
+            border:
+                1px solid rgba(255, 255, 255, .08);
 
 
-    border-radius:18px;
+            border-radius: 18px;
 
 
-    box-shadow:
-        0 20px 50px rgba(0,0,0,.5);
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, .5);
 
 
-    z-index:1000;
+            z-index: 1000;
 
-}
+        }
 
 
 
-input[type="file"] {
+        input[type="file"] {
 
-    display:none;
+            display: none;
 
-}
+        }
 
 
 
-.btn {
+        .btn {
 
-    height:42px;
+            height: 42px;
 
-    padding:0 15px;
+            padding: 0 15px;
 
 
-    display:flex;
+            display: flex;
 
-    align-items:center;
+            align-items: center;
 
-    justify-content:center;
+            justify-content: center;
 
-    gap:8px;
+            gap: 8px;
 
 
-    border:none;
+            border: none;
 
 
-    border-radius:12px;
+            border-radius: 12px;
 
 
-    background:#202020;
+            background: #202020;
 
 
-    color:#ddd;
+            color: #ddd;
 
 
-    font-size:14px;
+            font-size: 14px;
 
 
-    cursor:pointer;
+            cursor: pointer;
 
 
-    transition:.18s;
+            transition: .18s;
 
-}
+        }
 
 
 
-.btn:hover {
+        .btn:hover {
 
-    background:#303030;
+            background: #303030;
 
-    color:white;
+            color: white;
 
-}
+        }
 
 
 
-.btn:active {
+        .btn:active {
 
-    transform:scale(.96);
+            transform: scale(.96);
 
-}
+        }
 
 
 
-.btn svg {
+        .btn svg {
 
-    width:17px;
+            width: 17px;
 
-    height:17px;
+            height: 17px;
 
-}
+        }
 
 
 
-.btn.save {
+        .btn.save {
 
-    background:#2383e2;
+            background: #2383e2;
 
-    color:white;
+            color: white;
 
-}
+        }
 
 
 
-.btn.save:hover {
+        .btn.save:hover {
 
-    background:#3294f4;
+            background: #3294f4;
 
-}
+        }
 
 
 
 
 
-/* =====================
+        /* =====================
    BRUSH PANEL
 ===================== */
 
 
-#brushPanel {
+        #brushPanel {
 
 
-    position:fixed;
+            position: fixed;
 
 
-    top:95px;
+            top: 95px;
 
 
-    left:50%;
+            left: 50%;
 
 
-    transform:
-        translateX(-50%);
+            transform:
+                translateX(-50%);
 
 
-    display:none;
+            display: none;
 
 
-    gap:18px;
+            gap: 18px;
 
 
-    align-items:center;
+            align-items: center;
 
 
-    padding:12px 16px;
+            padding: 12px 16px;
 
 
-    background:
-        rgba(25,25,25,.85);
+            background:
+                rgba(25, 25, 25, .85);
 
 
-    backdrop-filter:
-        blur(20px);
+            backdrop-filter:
+                blur(20px);
 
 
-    border:
-        1px solid rgba(255,255,255,.08);
+            border:
+                1px solid rgba(255, 255, 255, .08);
 
 
-    border-radius:16px;
+            border-radius: 16px;
 
 
-    box-shadow:
-        0 20px 50px rgba(0,0,0,.5);
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, .5);
 
 
-    z-index:999;
+            z-index: 999;
 
-}
+        }
 
 
 
-#brushPanel button {
+        #brushPanel button {
 
-    border:none;
+            border: none;
 
-    cursor:pointer;
+            cursor: pointer;
 
-}
+        }
 
 
 
-.sizes {
+        .sizes {
 
-    display:flex;
+            display: flex;
 
-    gap:6px;
+            gap: 6px;
 
-}
+        }
 
 
 
-.sizes button {
+        .sizes button {
 
 
-    width:36px;
+            width: 36px;
 
-    height:36px;
+            height: 36px;
 
 
-    border-radius:10px;
+            border-radius: 10px;
 
 
-    background:#292929;
+            background: #292929;
 
 
-    color:white;
+            color: white;
 
-}
+        }
 
 
 
-.sizes button:hover {
+        .sizes button:hover {
 
-    background:#3a3a3a;
+            background: #3a3a3a;
 
-}
+        }
 
 
 
-.colors {
+        .colors {
 
-    display:flex;
+            display: flex;
 
-    gap:10px;
+            gap: 10px;
 
-}
+        }
 
 
 
-.color {
+        .color {
 
 
-    width:28px;
+            width: 28px;
 
-    height:28px;
+            height: 28px;
 
 
-    border-radius:50%;
+            border-radius: 50%;
 
 
-    border:
-        2px solid rgba(255,255,255,.15);
+            border:
+                2px solid rgba(255, 255, 255, .15);
 
-}
+        }
 
 
 
-/* цвета */
+        /* цвета */
 
-.black {
-    background:#fff;
-}
+        .black {
+            background: #fff;
+        }
 
-.red {
-    background:#ff3b30;
-}
+        .red {
+            background: #ff3b30;
+        }
 
-.blue {
-    background:#007aff;
-}
+        .blue {
+            background: #007aff;
+        }
 
-.green {
-    background:#34c759;
-}
+        .green {
+            background: #34c759;
+        }
 
-.yellow {
-    background:#ffcc00;
-}
+        .yellow {
+            background: #ffcc00;
+        }
 
 
 
 
 
-/* =====================
+        /* =====================
    LOGIN
 ===================== */
 
 
-#overlay {
+        #overlay {
 
 
-    position:fixed;
+            position: fixed;
 
 
-    inset:0;
+            inset: 0;
 
 
-    display:none;
+            display: none;
 
 
-    align-items:center;
+            align-items: center;
 
-    justify-content:center;
+            justify-content: center;
 
 
-    background:
-        rgba(0,0,0,.55);
+            background:
+                rgba(0, 0, 0, .55);
 
 
-    backdrop-filter:
-        blur(18px);
+            backdrop-filter:
+                blur(18px);
 
 
-    z-index:5000;
+            z-index: 5000;
 
-}
+        }
 
 
 
-.login {
+        .login {
 
 
-    width:380px;
+            width: 380px;
 
 
-    padding:34px;
+            padding: 34px;
 
 
-    display:flex;
+            display: flex;
 
 
-    flex-direction:column;
+            flex-direction: column;
 
 
-    gap:18px;
+            gap: 18px;
 
 
-    background:#181818;
+            background: #181818;
 
 
-    border:
-        1px solid rgba(255,255,255,.08);
+            border:
+                1px solid rgba(255, 255, 255, .08);
 
 
-    border-radius:24px;
+            border-radius: 24px;
 
 
-    box-shadow:
-        0 40px 100px rgba(0,0,0,.7);
+            box-shadow:
+                0 40px 100px rgba(0, 0, 0, .7);
 
-}
+        }
 
 
 
-#overlayTitle {
+        #overlayTitle {
 
 
-    margin:0;
+            margin: 0;
 
 
-    font-size:28px;
+            font-size: 28px;
 
 
-    letter-spacing:-.7px;
+            letter-spacing: -.7px;
 
-}
+        }
 
 
 
-.login input {
+        .login input {
 
 
-    height:48px;
+            height: 48px;
 
 
-    padding:0 15px;
+            padding: 0 15px;
 
 
-    border-radius:12px;
+            border-radius: 12px;
 
 
-    background:#101010;
+            background: #101010;
 
 
-    border:
-        1px solid #333;
+            border:
+                1px solid #333;
 
 
-    color:white;
+            color: white;
 
 
-    font-size:15px;
+            font-size: 15px;
 
 
-    outline:none;
+            outline: none;
 
-}
+        }
 
 
 
-.login input:focus {
+        .login input:focus {
 
-    border-color:#2383e2;
+            border-color: #2383e2;
 
-}
+        }
 
 
 
-.login .btn.save {
+        .login .btn.save {
 
 
-    height:52px;
+            height: 52px;
 
 
-    width:100%;
+            width: 100%;
 
 
-    justify-content:center;
+            justify-content: center;
 
 
-    border-radius:14px;
+            border-radius: 14px;
 
 
-    font-size:15px;
+            font-size: 15px;
 
 
-    font-weight:500;
+            font-weight: 500;
 
-}
+        }
 
 
 
-.login p {
+        .login p {
 
 
-    margin:0;
+            margin: 0;
 
 
-    color:#888;
+            color: #888;
 
 
-    font-size:13px;
+            font-size: 13px;
 
 
-    line-height:1.5;
+            line-height: 1.5;
 
-}
+        }
 
 
 
 
 
-/* =====================
+        /* =====================
    TOAST
 ===================== */
 
 
-#toast {
+        #toast {
 
 
-    position:fixed;
+            position: fixed;
 
 
-    bottom:30px;
+            bottom: 30px;
 
 
-    left:50%;
+            left: 50%;
 
 
-    transform:
-        translateX(-50%)
-        translateY(80px);
+            transform:
+                translateX(-50%) translateY(80px);
 
 
-    padding:14px 22px;
+            padding: 14px 22px;
 
 
-    background:#202020;
+            background: #202020;
 
 
-    border-radius:16px;
+            border-radius: 16px;
 
 
-    border:
-        1px solid rgba(255,255,255,.1);
+            border:
+                1px solid rgba(255, 255, 255, .1);
 
 
-    opacity:0;
+            opacity: 0;
 
 
-    transition:.25s;
+            transition: .25s;
 
 
-    z-index:6000;
+            z-index: 6000;
 
-}
-
-
-
-#toast.show {
+        }
 
 
-    opacity:1;
+
+        #toast.show {
 
 
-    transform:
-        translateX(-50%)
-        translateY(0);
-
-}
+            opacity: 1;
 
 
-</style>
+            transform:
+                translateX(-50%) translateY(0);
+
+        }
+    </style>
 
 </head>
 
@@ -604,194 +618,169 @@ input[type="file"] {
 
 
 
-<div id="overlay">
+    <div id="overlay">
 
-    <div class="login">
-
-
-        <h2 id="overlayTitle">
-            Вход
-        </h2>
+        <div class="login">
 
 
-        <input 
-            id="nameInput"
-            placeholder="Ваше имя">
+            <h2 id="overlayTitle">
+                Вход
+            </h2>
 
 
-        <button 
-            class="btn save"
-            onclick="enterEditor()">
-
-            Начать редактирование
-
-        </button>
+            <input id="nameInput" placeholder="Ваше имя">
 
 
-        <p>
-            После нажатия Вы начинаете сессию.
-            Обязательно сохраните изменения.
-            Пока сессия активна, другой человек
-            не сможет редактировать обои.
-        </p>
+            <button class="btn save" onclick="enterEditor()">
+
+                Начать редактирование
+
+            </button>
 
 
-    </div>
-
-</div>
-
-
-
-
-
-<div id="toast"></div>
+            <p>
+                После нажатия Вы начинаете сессию.
+                Обязательно сохраните изменения.
+                Пока сессия активна, другой человек
+                не сможет редактировать обои.
+            </p>
 
 
-
-
-
-<div id="panel">
-
-
-    <label class="btn" for="file">
-
-        <i data-lucide="image-plus"></i>
-
-        Добавить фото
-
-    </label>
-
-
-    <input 
-        type="file"
-        id="file">
-
-
-
-    <button 
-        class="btn"
-        onclick="remove()">
-
-        <i data-lucide="trash-2"></i>
-
-    </button>
-
-
-
-    <button 
-        class="btn"
-        onclick="toggleDrawing()">
-
-        <i data-lucide="paintbrush"></i>
-
-    </button>
-
-
-
-    <button 
-        class="btn save"
-        onclick="save()">
-
-        <i data-lucide="save"></i>
-
-        Сохранить
-
-    </button>
-
-
-</div>
-
-
-
-
-
-
-<div id="brushPanel">
-
-
-    <div class="sizes">
-
-        <button onclick="setBrushSize(3)">
-            3
-        </button>
-
-        <button onclick="setBrushSize(7)">
-            7
-        </button>
-
-        <button onclick="setBrushSize(12)">
-            12
-        </button>
-
-        <button onclick="setBrushSize(20)">
-            20
-        </button>
+        </div>
 
     </div>
 
 
 
-    <div class="colors">
 
 
-        <button 
-            class="color black"
-            onclick="setBrushColor('#fff')">
+    <div id="toast"></div>
+
+
+
+
+
+    <div id="panel">
+
+
+        <label class="btn" for="file">
+
+            <i data-lucide="image-plus"></i>
+
+            Добавить фото
+
+        </label>
+
+
+        <input type="file" id="file">
+
+
+
+        <button class="btn" onclick="remove()">
+
+            <i data-lucide="trash-2"></i>
+
         </button>
 
 
-        <button 
-            class="color red"
-            onclick="setBrushColor('#ff3b30')">
+
+        <button class="btn" onclick="toggleDrawing()">
+
+            <i data-lucide="paintbrush"></i>
+
         </button>
 
 
-        <button 
-            class="color blue"
-            onclick="setBrushColor('#007aff')">
-        </button>
 
+        <button class="btn save" onclick="save()">
 
-        <button 
-            class="color green"
-            onclick="setBrushColor('#34c759')">
-        </button>
+            <i data-lucide="save"></i>
 
+            Сохранить
 
-        <button 
-            class="color yellow"
-            onclick="setBrushColor('#ffcc00')">
         </button>
 
 
     </div>
 
 
-</div>
+
+
+
+
+    <div id="brushPanel">
+
+
+        <div class="sizes">
+
+            <button onclick="setBrushSize(3)">
+                3
+            </button>
+
+            <button onclick="setBrushSize(7)">
+                7
+            </button>
+
+            <button onclick="setBrushSize(12)">
+                12
+            </button>
+
+            <button onclick="setBrushSize(20)">
+                20
+            </button>
+
+        </div>
+
+
+
+        <div class="colors">
+
+
+            <button class="color black" onclick="setBrushColor('#fff')">
+            </button>
+
+
+            <button class="color red" onclick="setBrushColor('#ff3b30')">
+            </button>
+
+
+            <button class="color blue" onclick="setBrushColor('#007aff')">
+            </button>
+
+
+            <button class="color green" onclick="setBrushColor('#34c759')">
+            </button>
+
+
+            <button class="color yellow" onclick="setBrushColor('#ffcc00')">
+            </button>
+
+
+        </div>
+
+
+    </div>
 
 
 
 
 
 
-<canvas 
-    id="c"
-    width="1920"
-    height="1080">
-</canvas>
+    <canvas id="c" width="1920" height="1080">
+    </canvas>
 
 
 
 
 
-<script src="app.js"></script>
+    <script src="app.js"></script>
 
 
-<script>
+    <script>
 
-lucide.createIcons();
+        lucide.createIcons();
 
-</script>
+    </script>
 
 
 

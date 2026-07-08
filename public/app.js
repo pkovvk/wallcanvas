@@ -1,5 +1,29 @@
 const canvas = new fabric.Canvas("c");
 
+function fitCanvas() {
+
+    const scale = Math.min(
+        (window.innerWidth - 40) / 1920,
+        (window.innerHeight - 40) / 1080
+    );
+
+
+    canvas.setZoom(scale);
+
+
+    canvas.renderAll();
+
+}
+
+
+window.addEventListener(
+    "resize",
+    fitCanvas
+);
+
+
+fitCanvas();
+
 
 canvas.backgroundColor = "#000";
 
@@ -426,28 +450,3 @@ document.addEventListener(
         }
 
     });
-
-
-function resizeCanvas() {
-
-    const scale = Math.min(
-        window.innerWidth / 1920,
-        window.innerHeight / 1080
-    );
-
-
-    canvas.setZoom(scale);
-
-
-    canvas.requestRenderAll();
-
-}
-
-
-window.addEventListener(
-    "resize",
-    resizeCanvas
-);
-
-
-resizeCanvas();

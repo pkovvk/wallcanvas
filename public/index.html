@@ -2,578 +2,797 @@
 <html>
 
 <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
 
-        :root {
-            --bg: #0d0d0d;
-            --panel: #171717;
-            --panel-hover: #222;
-            --border: rgba(255, 255, 255, .08);
-            --text: #f5f5f5;
-            --muted: #999;
-            --accent: #2383e2;
-        }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
 
+<script src="https://unpkg.com/lucide@latest"></script>
 
-        body {
-            margin: 0;
-            overflow: hidden;
 
-            background:
-                radial-gradient(circle at top,
-                    #1d1d1d,
-                    #090909 60%);
+<style>
 
-            font-family:
-                Inter,
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                sans-serif;
+* {
+    box-sizing:border-box;
+}
 
-            color: var(--text);
-        }
 
+html,
+body {
 
+    width:100%;
+    height:100%;
 
-        /* ---------- FLOATING TOOLBAR ---------- */
+    margin:0;
 
-        #panel {
+    overflow:hidden;
 
-            position: fixed;
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
 
-            top: 24px;
-            left: 50%;
+    background:
+        radial-gradient(
+            circle at top,
+            #252525,
+            #090909 65%
+        );
 
-            transform: translateX(-50%);
+    color:white;
+}
 
 
-            display: flex;
-            gap: 8px;
 
+/* =====================
+   CANVAS
+===================== */
 
-            padding: 10px;
 
-            background:
-                rgba(25, 25, 25, .75);
+canvas {
 
+    display:block;
 
-            backdrop-filter:
-                blur(20px);
+}
 
 
-            border:
-                1px solid var(--border);
 
+/* =====================
+   TOOLBAR
+===================== */
 
-            border-radius: 18px;
 
+#panel {
 
-            box-shadow:
-                0 20px 50px rgba(0, 0, 0, .45);
+    position:fixed;
 
+    top:24px;
 
-            z-index: 1000;
+    left:50%;
 
-        }
+    transform:translateX(-50%);
 
 
+    display:flex;
 
-        .btn {
+    gap:8px;
 
-            height: 40px;
+    align-items:center;
 
-            padding: 0 14px;
 
+    padding:10px;
 
-            display: flex;
-            align-items: center;
-            gap: 8px;
 
+    background:
+        rgba(25,25,25,.75);
 
-            border-radius: 10px;
 
+    backdrop-filter:
+        blur(20px);
 
-            background:
-                transparent;
 
+    border:
+        1px solid rgba(255,255,255,.08);
 
-            color: #ddd;
 
+    border-radius:18px;
 
-            border:
-                1px solid transparent;
 
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.5);
 
-            cursor: pointer;
 
+    z-index:1000;
 
-            font-size: 14px;
+}
 
 
-            transition: .18s;
 
-        }
+input[type="file"] {
 
+    display:none;
 
-        .btn:hover {
+}
 
-            background:
-                var(--panel-hover);
 
-            color: white;
 
-        }
+.btn {
 
+    height:42px;
 
+    padding:0 15px;
 
-        .btn:active {
 
-            transform: scale(.96);
+    display:flex;
 
-        }
+    align-items:center;
 
+    justify-content:center;
 
+    gap:8px;
 
-        .btn.save {
 
-            background:
-                var(--accent);
+    border:none;
 
-            color: white;
 
-        }
+    border-radius:12px;
 
 
-        .btn.save:hover {
+    background:#202020;
 
-            background: #3294f4;
 
-        }
+    color:#ddd;
 
 
+    font-size:14px;
 
 
+    cursor:pointer;
 
-        /* ICONS */
 
-        .btn svg {
+    transition:.18s;
 
-            width: 17px;
-            height: 17px;
+}
 
-        }
 
 
+.btn:hover {
 
-        /* ---------- DRAW PANEL ---------- */
+    background:#303030;
 
+    color:white;
 
-        #brushPanel {
+}
 
 
-            position: fixed;
 
+.btn:active {
 
-            top: 92px;
+    transform:scale(.96);
 
-            left: 50%;
+}
 
-            transform:
-                translateX(-50%);
 
 
-            display: none;
+.btn svg {
 
+    width:17px;
 
-            gap: 18px;
+    height:17px;
 
+}
 
-            padding: 12px 16px;
 
 
-            background:
-                rgba(25, 25, 25, .85);
+.btn.save {
 
+    background:#2383e2;
 
-            backdrop-filter:
-                blur(20px);
+    color:white;
 
+}
 
-            border:
-                1px solid var(--border);
 
 
-            border-radius: 16px;
+.btn.save:hover {
 
+    background:#3294f4;
 
-            box-shadow:
-                0 20px 50px rgba(0, 0, 0, .4);
+}
 
 
-        }
 
 
 
-        .sizes button {
+/* =====================
+   BRUSH PANEL
+===================== */
 
 
-            width: 34px;
-            height: 34px;
+#brushPanel {
 
 
-            background: #242424;
+    position:fixed;
 
-            color: white;
 
+    top:95px;
 
-            border: none;
 
+    left:50%;
 
-            border-radius: 9px;
 
+    transform:
+        translateX(-50%);
 
-            cursor: pointer;
 
+    display:none;
 
-        }
 
+    gap:18px;
 
-        .sizes button:hover {
 
-            background: #333;
+    align-items:center;
 
-        }
 
+    padding:12px 16px;
 
 
-        .colors {
+    background:
+        rgba(25,25,25,.85);
 
-            display: flex;
-            gap: 10px;
 
-        }
+    backdrop-filter:
+        blur(20px);
 
 
-        .color {
+    border:
+        1px solid rgba(255,255,255,.08);
 
-            width: 28px;
-            height: 28px;
 
-            border-radius: 50%;
+    border-radius:16px;
 
-            border:
-                2px solid rgba(255, 255, 255, .15);
 
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.5);
 
-            cursor: pointer;
 
-        }
+    z-index:999;
 
+}
 
 
-        /* ---------- LOGIN ---------- */
 
+#brushPanel button {
 
-        #overlay {
+    border:none;
 
+    cursor:pointer;
 
-            position: fixed;
+}
 
-            inset: 0;
 
 
-            display: none;
+.sizes {
 
+    display:flex;
 
-            align-items: center;
+    gap:6px;
 
-            justify-content: center;
+}
 
 
-            background:
-                rgba(0, 0, 0, .55);
 
+.sizes button {
 
-            backdrop-filter:
-                blur(15px);
 
+    width:36px;
 
-            z-index: 5000;
+    height:36px;
 
-        }
 
+    border-radius:10px;
 
 
-        .login {
+    background:#292929;
 
 
-            width: 380px;
+    color:white;
 
+}
 
-            padding: 34px;
 
 
-            border-radius: 24px;
+.sizes button:hover {
 
+    background:#3a3a3a;
 
-            background:
-                #181818;
+}
 
 
-            border:
-                1px solid var(--border);
 
+.colors {
 
-            box-shadow:
-                0 40px 100px rgba(0, 0, 0, .7);
+    display:flex;
 
+    gap:10px;
 
-            display: flex;
+}
 
-            flex-direction: column;
 
-            gap: 18px;
 
-        }
+.color {
 
 
+    width:28px;
 
-        #overlayTitle {
+    height:28px;
 
 
-            margin: 0;
+    border-radius:50%;
 
 
-            font-size: 28px;
+    border:
+        2px solid rgba(255,255,255,.15);
 
+}
 
-            letter-spacing: -.8px;
 
 
-        }
+/* цвета */
 
+.black {
+    background:#fff;
+}
 
+.red {
+    background:#ff3b30;
+}
 
-        .login input {
+.blue {
+    background:#007aff;
+}
 
+.green {
+    background:#34c759;
+}
 
-            height: 46px;
+.yellow {
+    background:#ffcc00;
+}
 
 
-            padding: 0 14px;
 
 
-            border-radius: 12px;
 
+/* =====================
+   LOGIN
+===================== */
 
-            background: #111;
 
+#overlay {
 
-            border:
-                1px solid #333;
 
+    position:fixed;
 
-            color: white;
 
+    inset:0;
 
-            outline: none;
 
+    display:none;
 
-        }
 
+    align-items:center;
 
-        .login input:focus {
+    justify-content:center;
 
 
-            border-color:
-                var(--accent);
+    background:
+        rgba(0,0,0,.55);
 
 
-            box-shadow:
-                0 0 0 3px rgba(35, 131, 226, .2);
+    backdrop-filter:
+        blur(18px);
 
-        }
 
+    z-index:5000;
 
+}
 
-        .login p {
 
 
-            margin: 0;
+.login {
 
 
-            color: #888;
+    width:380px;
 
 
-            line-height: 1.5;
+    padding:34px;
 
 
-            font-size: 13px;
+    display:flex;
 
-        }
 
+    flex-direction:column;
 
 
+    gap:18px;
 
-        /* ---------- TOAST ---------- */
 
+    background:#181818;
 
-        #toast {
 
+    border:
+        1px solid rgba(255,255,255,.08);
 
-            position: fixed;
 
+    border-radius:24px;
 
-            bottom: 32px;
 
-            left: 50%;
+    box-shadow:
+        0 40px 100px rgba(0,0,0,.7);
 
+}
 
-            transform:
-                translateX(-50%) translateY(80px);
 
 
-            padding: 12px 20px;
+#overlayTitle {
 
 
-            background: #1c1c1c;
+    margin:0;
 
 
-            border:
-                1px solid var(--border);
+    font-size:28px;
 
 
-            border-radius: 14px;
+    letter-spacing:-.7px;
 
+}
 
-            color: white;
 
 
-            opacity: 0;
+.login input {
 
 
-            transition: .25s;
+    height:48px;
 
 
-            box-shadow:
-                0 20px 50px rgba(0, 0, 0, .5);
+    padding:0 15px;
 
 
-        }
+    border-radius:12px;
 
 
-        #toast.show {
+    background:#101010;
 
 
-            opacity: 1;
+    border:
+        1px solid #333;
 
 
-            transform:
-                translateX(-50%) translateY(0);
+    color:white;
 
-        }
 
+    font-size:15px;
 
 
-        /* CANVAS */
+    outline:none;
 
-        canvas {
+}
 
-            display: block;
 
-        }
-    </style>
+
+.login input:focus {
+
+    border-color:#2383e2;
+
+}
+
+
+
+.login .btn.save {
+
+
+    height:52px;
+
+
+    width:100%;
+
+
+    justify-content:center;
+
+
+    border-radius:14px;
+
+
+    font-size:15px;
+
+
+    font-weight:500;
+
+}
+
+
+
+.login p {
+
+
+    margin:0;
+
+
+    color:#888;
+
+
+    font-size:13px;
+
+
+    line-height:1.5;
+
+}
+
+
+
+
+
+/* =====================
+   TOAST
+===================== */
+
+
+#toast {
+
+
+    position:fixed;
+
+
+    bottom:30px;
+
+
+    left:50%;
+
+
+    transform:
+        translateX(-50%)
+        translateY(80px);
+
+
+    padding:14px 22px;
+
+
+    background:#202020;
+
+
+    border-radius:16px;
+
+
+    border:
+        1px solid rgba(255,255,255,.1);
+
+
+    opacity:0;
+
+
+    transition:.25s;
+
+
+    z-index:6000;
+
+}
+
+
+
+#toast.show {
+
+
+    opacity:1;
+
+
+    transform:
+        translateX(-50%)
+        translateY(0);
+
+}
+
+
+</style>
+
 </head>
+
 
 <body>
 
-    <div id="overlay">
 
 
-        <div class="login">
+<div id="overlay">
+
+    <div class="login">
 
 
-            <h2 id="overlayTitle">
-                Вход
-            </h2>
+        <h2 id="overlayTitle">
+            Вход
+        </h2>
 
 
-            <input id="nameInput" placeholder="Ваше имя">
+        <input 
+            id="nameInput"
+            placeholder="Ваше имя">
 
 
-            <button class="btn save" onclick="enterEditor()">
+        <button 
+            class="btn save"
+            onclick="enterEditor()">
 
-                Начать редактирование
+            Начать редактирование
 
-            </button>
-
-            <p>После нажатия Вы начинаете сессию, обязательно сохраните изменения. Пока Ваша сессия активна, другой
-                человек не сможет редактировать обои.</p>
+        </button>
 
 
-        </div>
+        <p>
+            После нажатия Вы начинаете сессию.
+            Обязательно сохраните изменения.
+            Пока сессия активна, другой человек
+            не сможет редактировать обои.
+        </p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+<div id="toast"></div>
+
+
+
+
+
+<div id="panel">
+
+
+    <label class="btn" for="file">
+
+        <i data-lucide="image-plus"></i>
+
+        Добавить фото
+
+    </label>
+
+
+    <input 
+        type="file"
+        id="file">
+
+
+
+    <button 
+        class="btn"
+        onclick="remove()">
+
+        <i data-lucide="trash-2"></i>
+
+    </button>
+
+
+
+    <button 
+        class="btn"
+        onclick="toggleDrawing()">
+
+        <i data-lucide="paintbrush"></i>
+
+    </button>
+
+
+
+    <button 
+        class="btn save"
+        onclick="save()">
+
+        <i data-lucide="save"></i>
+
+        Сохранить
+
+    </button>
+
+
+</div>
+
+
+
+
+
+
+<div id="brushPanel">
+
+
+    <div class="sizes">
+
+        <button onclick="setBrushSize(3)">
+            3
+        </button>
+
+        <button onclick="setBrushSize(7)">
+            7
+        </button>
+
+        <button onclick="setBrushSize(12)">
+            12
+        </button>
+
+        <button onclick="setBrushSize(20)">
+            20
+        </button>
+
+    </div>
+
+
+
+    <div class="colors">
+
+
+        <button 
+            class="color black"
+            onclick="setBrushColor('#fff')">
+        </button>
+
+
+        <button 
+            class="color red"
+            onclick="setBrushColor('#ff3b30')">
+        </button>
+
+
+        <button 
+            class="color blue"
+            onclick="setBrushColor('#007aff')">
+        </button>
+
+
+        <button 
+            class="color green"
+            onclick="setBrushColor('#34c759')">
+        </button>
+
+
+        <button 
+            class="color yellow"
+            onclick="setBrushColor('#ffcc00')">
+        </button>
 
 
     </div>
 
 
-    <div id="toast"></div>
+</div>
 
 
-    <div id="panel">
-
-        <label class="btn" for="file">
-            Добавить фото
-        </label>
-
-        <input type="file" id="file">
-
-        <button class="btn" onclick="remove()">
-            Удалить фото
-        </button>
-
-        <button class="btn" onclick="toggleDrawing()">
-            Рисовать
-        </button>
-
-        <button class="btn save" onclick="save()">
-            Сохранить изменения
-        </button>
-
-    </div>
 
 
-    <div id="brushPanel">
-
-        <div class="sizes">
-            <button onclick="setBrushSize(3)">3</button>
-            <button onclick="setBrushSize(7)">7</button>
-            <button onclick="setBrushSize(12)">12</button>
-            <button onclick="setBrushSize(20)">20</button>
-        </div>
 
 
-        <div class="colors">
-            <button class="color black" onclick="setBrushColor('#fff')"></button>
-            <button class="color red" onclick="setBrushColor('#ff3b30')"></button>
-            <button class="color blue" onclick="setBrushColor('#007aff')"></button>
-            <button class="color green" onclick="setBrushColor('#34c759')"></button>
-            <button class="color yellow" onclick="setBrushColor('#ffcc00')"></button>
-        </div>
-
-    </div>
-
-    <canvas id="c" width="1920" height="1080"></canvas>
+<canvas 
+    id="c"
+    width="1920"
+    height="1080">
+</canvas>
 
 
-    <script src="app.js"></script>
+
+
+
+<script src="app.js"></script>
+
+
+<script>
+
+lucide.createIcons();
+
+</script>
+
 
 
 </body>

@@ -426,3 +426,116 @@ document.addEventListener(
         }
 
     });
+
+
+// =====================
+// CANVAS PAN (RIGHT MOUSE)
+// =====================
+
+
+let isPanning = false;
+
+let lastPosX = 0;
+let lastPosY = 0;
+
+
+
+canvas.upperCanvasEl.addEventListener(
+    "mousedown",
+    e => {
+
+
+        if (e.button === 2) {
+
+
+            isPanning = true;
+
+
+            lastPosX = e.clientX;
+            lastPosY = e.clientY;
+
+
+            canvas.selection = false;
+
+
+            canvas.defaultCursor = "grabbing";
+
+
+        }
+
+
+    }
+);
+
+
+
+canvas.upperCanvasEl.addEventListener(
+    "mousemove",
+    e => {
+
+
+        if (!isPanning)
+            return;
+
+
+
+        const vpt =
+            canvas.viewportTransform;
+
+
+
+        vpt[4] +=
+            e.clientX - lastPosX;
+
+
+
+        vpt[5] +=
+            e.clientY - lastPosY;
+
+
+
+        canvas.requestRenderAll();
+
+
+
+        lastPosX = e.clientX;
+        lastPosY = e.clientY;
+
+
+    }
+);
+
+
+
+canvas.upperCanvasEl.addEventListener(
+    "mouseup",
+    e => {
+
+
+        if (e.button === 2) {
+
+
+            isPanning = false;
+
+
+            canvas.selection = true;
+
+
+            canvas.defaultCursor = "default";
+
+
+        }
+
+
+    }
+);
+
+
+
+// отключаем стандартное меню ПКМ
+canvas.upperCanvasEl.addEventListener(
+    "contextmenu",
+    e => {
+        e.preventDefault();
+    }
+);
